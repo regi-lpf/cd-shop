@@ -3,6 +3,7 @@ package br.com.devstoblu.cdshop.model;
 
 import java.util.List;
 
+import br.com.devstoblu.cdshop.dto.ClientDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,14 +19,14 @@ public class Order {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "client_id")
-    private Client client;
+    private ClientDTO client;
     @OneToMany(mappedBy = "order")
     private List<Product> products;
 
     public Order() {
     	}
 
-	public Order(Long id, Client client, List<Product> products) {
+	public Order(Long id, ClientDTO client, List<Product> products) {
 		super();
 		this.id = id;
 		this.client = client;
@@ -40,12 +41,12 @@ public class Order {
 		this.id = id;
 	}
 
-	public Client getClient() {
+	public ClientDTO getClient() {
 		return client;
 	}
 
-	public void setClient(Client client) {
-		this.client = client;
+	public void setClient(ClientDTO clientDTO) {
+		this.client = clientDTO;
 	}
 
 	public List<Product> getProducts() {

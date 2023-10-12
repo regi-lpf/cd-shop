@@ -1,6 +1,5 @@
 package br.com.devstoblu.cdshop.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.devstoblu.cdshop.dto.ProductDTO;
@@ -18,7 +17,6 @@ public class ProductService {
     private final ProductMapper productMapper;
     private final OrderService orderService;  // Assuming you have an OrderService
 
-    @Autowired
     public ProductService(ProductRepository productRepository, ProductMapper productMapper, OrderService orderService) {
         this.productRepository = productRepository;
         this.productMapper = productMapper;
@@ -33,6 +31,10 @@ public class ProductService {
     public ProductDTO getProductById(Long productId) {
         Optional<Product> productOptional = productRepository.findById(productId);
         return productOptional.map(productMapper::entityToDTO).orElse(null);
+    }
+    
+    public List<Product> getProductsByIds(List<Long> productIds) {
+        return productRepository.findAllById(productIds);
     }
 
     public ProductDTO createProduct(ProductDTO productDTO) {

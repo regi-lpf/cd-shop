@@ -18,13 +18,13 @@ public class Product {
     private double price;
     @ManyToOne
     @JoinColumn(name = "order_id")
-    private Order order;
+    private OrderDTO order;
 
     public Product() {
     	
     }
 
-	public Product(Long id, String title, double price, Order order) {
+	public Product(Long id, String title, double price, OrderDTO order) {
 		super();
 		this.id = id;
 		this.title = title;
@@ -56,7 +56,7 @@ public class Product {
 		this.price = price;
 	}
 
-	public Order getOrder() {
+	public OrderDTO getOrder() {
 		return order;
 	}
 

@@ -1,29 +1,29 @@
 package br.com.devstoblu.cdshop.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.devstoblu.cdshop.dto.OrderDTO;
 import br.com.devstoblu.cdshop.mapper.OrderMapper;
 import br.com.devstoblu.cdshop.model.Order;
+import br.com.devstoblu.cdshop.model.Product;
 import br.com.devstoblu.cdshop.repository.OrderRepository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final OrderMapper orderMapper;
-    private final ClientService clientService;  // Assuming you have a ClientService
+    private final OrderMapper orderMapper; // Assuming you have an OrderMapper
+    private final ClientService clientService; // Assuming you have a ClientService
+    private final ProductService productService; // Assuming you have a ProductService
 
-    @Autowired
-    public OrderService(OrderRepository orderRepository, OrderMapper orderMapper, ClientService clientService) {
+    public OrderService(OrderRepository orderRepository, OrderMapper orderMapper, ClientService clientService, ProductService productService) {
         this.orderRepository = orderRepository;
         this.orderMapper = orderMapper;
         this.clientService = clientService;
+        this.productService = productService;
     }
 
     public List<OrderDTO> getAllOrders() {
@@ -40,9 +40,15 @@ public class OrderService {
         // Validate input, perform business logic, etc.
 
         Order order = orderMapper.dtoToEntity(orderDTO);
+
         // Set client using the clientService (assuming you have a method to get a client by ID)
         order.setClient(clientService.getClientById(orderDTO.getClientId()));
-        
+
+        // Set products using the productService (assuming you have a method to get products by IDs)
+        List<Long> productIds = orderDTO.getProductIds();
+        List<Product> products = productService.getProductsByIds(productIds);
+        order.setProducts(products);
+
         Order savedOrder = orderRepository.save(order);
         return orderMapper.entityToDTO(savedOrder);
     }
@@ -53,13 +59,16 @@ public class OrderService {
             Order existingOrder = existingOrderOptional.get();
 
             // Update fields based on orderDTO
-            existingOrder.setProducts(orderDTO.getProductIds().stream()
-                    .map(productId -> productService.getProductById(productId))
-                    .collect(Collectors.toList()));
-            
+            existingOrder.setProducts(productService.getProductsByIds(orderDTO.getProductIds()));
+
             // Set client using the clientService (assuming you have a method to get a client by ID)
             existingOrder.setClient(clientService.getClientById(orderDTO.getClientId()));
-            
+
+            // Set products using the productService (assuming you have a method to get products by IDs)
+            List<Long> productIds = orderDTO.getProductIds();
+            List<Product> products = productService.getProductsByIds(productIds);
+            existingOrder.setProducts(products);
+
             // Save the updated entity
             Order updatedOrder = orderRepository.save(existingOrder);
             return orderMapper.entityToDTO(updatedOrder);

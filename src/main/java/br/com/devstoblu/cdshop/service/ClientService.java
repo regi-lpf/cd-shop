@@ -5,7 +5,6 @@ import br.com.devstoblu.cdshop.mapper.ClientMapper;
 import br.com.devstoblu.cdshop.model.Client;
 import br.com.devstoblu.cdshop.repository.ClientRepository;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional; 
@@ -16,7 +15,6 @@ public class ClientService {
     private final ClientRepository clientRepository;
     private final ClientMapper clientMapper;
 
-    @Autowired
     public ClientService(ClientRepository clientRepository, ClientMapper clientMapper) {
         this.clientRepository = clientRepository;
         this.clientMapper = clientMapper;
